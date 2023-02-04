@@ -1,0 +1,11 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongClusterPlugin
+metadata:
+  name: go-wait-sample
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+  labels:
+    global: 'true'
+plugin: "go-wait"
+config:
+  waittime: 10
