@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	WaitTime int
+	Secret   string
 }
 
 func New() interface{} {
@@ -22,12 +23,17 @@ func (config Config) Access(kong *pdk.PDK) {
 	_ = kong.Response.SetHeader("x-wait-time", fmt.Sprintf("%d seconds", config.WaitTime))
 
 	host, _ := kong.Request.GetHost()
+	p, _ := kong.Request.GetPath()
+	kong.Log.Debug("Path Request" + p)
 
 	lastRequest, exists := requests[host]
+	_ = kong.Response.SetHeader("x-plugin-path", p)
+
+	kong.Log.Debug("Secret Key: " + config.Secret)
 
 	token, _ := kong.Request.GetHeader("Token")
 	if token != "" {
-		fmt.Println()
+		kong.Log.Debug("hello world debug")
 	}
 
 	if exists && time.Now().Sub(lastRequest) < time.Duration(config.WaitTime)*time.Second {
@@ -38,7 +44,7 @@ func (config Config) Access(kong *pdk.PDK) {
 }
 
 func main() {
-	Version := "1.1"
+	Version := "1.2"
 	Priority := 1000
 	_ = server.StartServer(New, Version, Priority)
 }

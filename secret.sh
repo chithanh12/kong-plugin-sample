@@ -1,0 +1,1 @@
+ kubectl create secret generic my-secret --from-literal=secret=supersecret --from-literal=waittime=10
