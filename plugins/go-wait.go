@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/Kong/go-pdk"
 	"github.com/Kong/go-pdk/server"
-	"time"
 )
 
 type Config struct {
@@ -23,6 +24,11 @@ func (config Config) Access(kong *pdk.PDK) {
 	host, _ := kong.Request.GetHost()
 
 	lastRequest, exists := requests[host]
+
+	token, _ := kong.Request.GetHeader("Token")
+	if token != "" {
+		fmt.Println()
+	}
 
 	if exists && time.Now().Sub(lastRequest) < time.Duration(config.WaitTime)*time.Second {
 		kong.Response.Exit(400, "Maximum Requests Reached", make(map[string][]string))
