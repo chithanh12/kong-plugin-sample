@@ -1,0 +1,7 @@
+GET http://localhost:8080/param?query=hello
+Accept: application/application/json
+
+
+###
+curl  http://kong.example/lemon/param?query=hello -i --connect-to kong.example:80:127.0.0.1:50043
+curl  http://kong.example/lime/param?query=hello -i --connect-to kong.example:80:127.0.0.1:50043

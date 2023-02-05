@@ -5,5 +5,5 @@ metadata:
 config:
   add:
     headers:
-      - "x-added-route: demo"
+      - "x-added-route: hello-da"
 plugin: response-transformer

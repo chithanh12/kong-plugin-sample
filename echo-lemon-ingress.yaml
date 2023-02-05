@@ -4,6 +4,7 @@ metadata:
   name: lemon
   annotations:
     konghq.com/strip-path: 'true'
+    konghq.com/plugins: 'add-header-route'
 spec:
   ingressClassName: kong
   rules:
