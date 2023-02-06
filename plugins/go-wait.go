@@ -18,11 +18,16 @@ func New() interface{} {
 var requests = make(map[string]time.Time)
 
 func (config Config) Access(kong *pdk.PDK) {
+	defer func() {
+		if r := recover(); r != nil {
+			kong.Response.Exit(400, "Error here", make(map[string][]string))
+		}
+	}()
 	_ = kong.Response.SetHeader("x-wait-time", fmt.Sprintf("%d seconds", config.WaitTime))
 
 	host, _ := kong.Request.GetHost()
 	lastRequest, exists := requests[host]
-
+	panic("xxx")
 	if exists && time.Now().Sub(lastRequest) < time.Duration(config.WaitTime)*time.Second {
 		kong.Response.Exit(400, "Maximum Requests Reached", make(map[string][]string))
 	} else {
