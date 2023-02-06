@@ -9,4 +9,3 @@ metadata:
 plugin: "go-wait"
 config:
   waittime: 10
-  secret: 'xxxxx'
