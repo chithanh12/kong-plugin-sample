@@ -4,7 +4,7 @@ metadata:
   name: claim
   annotations:
     konghq.com/strip-path: 'true'
-    #konghq.com/plugins: 'add-header-route'
+    konghq.com/plugins: 'add-header-route'
 spec:
   ingressClassName: kong
   rules:
