@@ -16,10 +16,10 @@ var (
 func VerifyToken(tokenStr string) (map[string]Permision, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte("your-256-bit-secret"), nil
+		return RSAPublicKey, nil
 	})
 	if err != nil {
 		fmt.Println(err)

@@ -8,4 +8,5 @@ metadata:
     global: 'true'
 plugin: "go-wait"
 config:
-  waittime: 10
+  waitTime: 10
+  publicToken: "abc"
