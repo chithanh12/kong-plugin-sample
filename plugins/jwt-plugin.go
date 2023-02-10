@@ -1,44 +1,37 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Kong/go-pdk"
 	"github.com/Kong/go-pdk/server"
-	"github.com/chithanh12/kong-plugin/cache"
-	"github.com/chithanh12/kong-plugin/utils"
-	"regexp"
+	"time"
 )
 
 type Config struct {
-	WaitTime    int               `json:"waitTime"`
-	PublicToken string            `json:"publicToken"`
-	Redis       cache.RedisConfig `json:"redis"`
+	WaitTime int
 }
 
-var (
-	BearerReg = regexp.MustCompile("^Bearer\\s")
-)
+func New() interface{} {
+	return &Config{}
+}
+
+var requests = make(map[string]time.Time)
 
 func (config Config) Access(kong *pdk.PDK) {
-	defer func() {
-		if r := recover(); r != nil {
-			kong.Response.Exit(500, "Gateway Internal Server Error", make(map[string][]string))
-		}
-	}()
+	_ = kong.Response.SetHeader("x-wait-time", fmt.Sprintf("%d seconds", config.WaitTime))
 
-	cookieHeader, _ := kong.Request.GetHeader("cookie")
+	host, _ := kong.Request.GetHost()
+	lastRequest, exists := requests[host]
 
-	cookies := utils.GetCookies(cookieHeader)
-	if token, ok := cookies["authorization"]; ok {
-		token = BearerReg.ReplaceAllString(token, "")
-
-		authorizationToken := cache.Redis(config.Redis).GetKey(token)
-		// write back to response header
-		_ = kong.Response.SetHeader("Authorization", authorizationToken)
+	if exists && time.Now().Sub(lastRequest) < time.Duration(config.WaitTime)*time.Second {
+		kong.Response.Exit(400, "Maximum Requests Reached", make(map[string][]string))
+	} else {
+		requests[host] = time.Now()
 	}
 }
 
 func main() {
-	Version := "1.4"
+	Version := "1.1"
 	Priority := 1000
-	_ = server.StartServer(func() interface{} { return &Config{} }, Version, Priority)
+	_ = server.StartServer(New, Version, Priority)
 }

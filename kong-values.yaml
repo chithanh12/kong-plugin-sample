@@ -3,12 +3,17 @@ deployment:
     - name: custom-plugins
       hostPath:
         path: /kong/plugins
+    - name: iam-plugins
+      hostPath:
+        path: /kong/iam-plugins
 
   userDefinedVolumeMounts:
     - name: custom-plugins
       mountPath: /usr/local/bin/go-wait
       subPath: go-wait
-
+    - name: iam-plugins
+      mountPath: /usr/local/bin/iam-plugins
+      subPath: iam-plugins
 env:
   database: "off"
   nginx_worker_processes: "4"
@@ -21,11 +26,12 @@ env:
   #portal_api_error_log: /dev/stderr
   prefix: /kong_prefix/
   log_level: debug
-  PLUGINS: go-wait,response-transformer
+  PLUGINS: go-wait,response-transformer,iam-plugins
 
-  pluginserver_names: go-wait
+  pluginserver_names: go-wait,iam-plugins
   PLUGINSERVER_GO_WAIT_QUERY_CMD: /usr/local/bin/go-wait -dump
-  
+  PLUGINSERVER_IAM_PLUGINS_QUERY_CMD: /usr/local/bin/iam-plugins -dump
+
   ## the chart uses the traditional router (for Kong 3.x+) because the ingress
   ## controller generates traditional routes. if you do not use the controller,
   ## you may set this to "traditional_compatible" or "expression" to use the new
@@ -37,3 +43,6 @@ ingressController:
     - name: custom-plugins
       mountPath: /usr/local/bin/go-wait
       subPath: go-wait
+    - name: iam-plugins
+      mountPath: /usr/local/bin/iam-plugins
+      subPath: iam-plugins

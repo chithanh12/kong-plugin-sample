@@ -8,25 +8,30 @@ import (
 )
 
 type (
+	Cache interface {
+		Get(key string) string
+	}
+
 	RedisConfig struct {
 		Host     string `json:"host"`
 		Password string `json:"password"`
 		DB       int    `json:"DB"`
 	}
+
 	redisRepo struct {
 		client *redis.Client
 	}
 )
 
 var (
-	repoInstance *redisRepo
+	repoInstance Cache
 	doOnce       sync.Once
 )
 
 func initRedis(cfg RedisConfig) error {
-	repoInstance = &redisRepo{}
+	redisCache := &redisRepo{}
 
-	repoInstance.client = redis.NewClient(&redis.Options{
+	redisCache.client = redis.NewClient(&redis.Options{
 		Addr:     cfg.Host,
 		Password: cfg.Password, // no password set
 		DB:       cfg.DB,       // use default DB
@@ -34,12 +39,13 @@ func initRedis(cfg RedisConfig) error {
 
 	ctx, cancelCtx := context.WithTimeout(context.TODO(), 1500*time.Millisecond)
 	defer cancelCtx()
-	_, err := repoInstance.client.Ping(ctx).Result()
+	_, err := redisCache.client.Ping(ctx).Result()
 
+	repoInstance = redisCache
 	return err
 }
 
-func Redis(cfg RedisConfig) *redisRepo {
+func Instance(cfg RedisConfig) Cache {
 	doOnce.Do(func() {
 		// init redis for the first time
 		if err := initRedis(cfg); err != nil {
@@ -50,7 +56,7 @@ func Redis(cfg RedisConfig) *redisRepo {
 	return repoInstance
 }
 
-func (r *redisRepo) GetKey(key string) string {
+func (r *redisRepo) Get(key string) string {
 	rs, err := r.client.Get(context.Background(), key).Result()
 	if err != nil {
 		return ""
