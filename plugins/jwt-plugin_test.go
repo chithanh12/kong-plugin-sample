@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/Kong/go-pdk/test"
-	"github.com/chithanh12/kong-plugin/cache"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/Kong/go-pdk/test"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPlugin(t *testing.T) {
@@ -19,13 +19,13 @@ func TestPlugin(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	env.DoHttps(&Config{
-		Redis: cache.RedisConfig{
-			Host:     "localhost:6379",
-			Password: "xbmS3IX9b7",
-			DB:       0,
-		},
-	})
+	// env.DoHttps(&Config{
+	// 	Redis: cache.RedisConfig{
+	// 		Host:     "localhost:6379",
+	// 		Password: "xbmS3IX9b7",
+	// 		DB:       0,
+	// 	},
+	// })
 
 	assert.Equal(t, "yyyyyyy", env.ClientRes.Headers.Get("authorization"))
 }

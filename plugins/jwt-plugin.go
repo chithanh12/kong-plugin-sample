@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	WaitTime int
+	WaitTime int `json:"waittime"`
 }
 
 func New() interface{} {
@@ -31,7 +31,7 @@ func (config Config) Access(kong *pdk.PDK) {
 }
 
 func main() {
-	Version := "1.1"
+	Version := "1.6"
 	Priority := 1000
 	_ = server.StartServer(New, Version, Priority)
 }
