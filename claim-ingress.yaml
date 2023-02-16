@@ -4,14 +4,14 @@ metadata:
   name: claim
   annotations:
     konghq.com/strip-path: 'true'
-    konghq.com/plugins: 'add-header-route'
+    konghq.com/plugins: 'iam-plugins'
 spec:
   ingressClassName: kong
   rules:
     - host: da.com 
       http:
         paths:
-          - path: /claim
+          - path: /api/claim/
             pathType: ImplementationSpecific
             backend:
               service:

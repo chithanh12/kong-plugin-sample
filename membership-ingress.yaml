@@ -4,14 +4,13 @@ metadata:
   name: policy
   annotations:
     konghq.com/strip-path: 'true'
-    konghq.com/plugins: 'iam-plugins'
 spec:
   ingressClassName: kong
   rules:
     - host: da.com 
       http:
         paths:
-          - path: /api/policy/
+          - path: /api/membership/
             pathType: ImplementationSpecific
             backend:
               service:
