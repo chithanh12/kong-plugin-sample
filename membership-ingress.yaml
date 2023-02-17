@@ -1,17 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: policy
+  name: membership
   annotations:
     konghq.com/strip-path: 'true'
+    konghq.com/plugins: 'cookies-to-headers'
 spec:
   ingressClassName: kong
   rules:
     - host: da.com 
       http:
         paths:
-          - path: /api/membership/
-            pathType: ImplementationSpecific
+          - path: /membership
+            pathType: Prefix
             backend:
               service:
                 name: echo

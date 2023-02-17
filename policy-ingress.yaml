@@ -4,7 +4,7 @@ metadata:
   name: policy
   annotations:
     konghq.com/strip-path: 'true'
-    konghq.com/plugins: 'iam-plugins'
+    konghq.com/plugins: 'cookies-to-headers,iam-plugins'
 spec:
   ingressClassName: kong
   rules:
@@ -12,7 +12,7 @@ spec:
       http:
         paths:
           - path: /api/policy/
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: echo

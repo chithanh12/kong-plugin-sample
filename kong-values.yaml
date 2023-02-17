@@ -20,7 +20,7 @@ env:
   portal_api_error_log: /dev/stderr
   prefix: /kong_prefix/
   log_level: debug
-  PLUGINS: response-transformer,iam-plugins
+  PLUGINS: response-transformer,iam-plugins,cookies-to-headers
 
   pluginserver_names: iam-plugins
   #PLUGINSERVER_GO_WAIT_QUERY_CMD: /usr/local/bin/go-wait -dump
@@ -37,3 +37,8 @@ ingressController:
     - name: iam-plugins
       mountPath: /usr/local/bin/iam-plugins
       subPath: iam-plugins
+
+plugins:
+  configMaps:
+    - pluginName: cookies-to-headers
+      name: cookies-to-headers 
